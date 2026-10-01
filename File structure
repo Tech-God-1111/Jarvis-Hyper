@@ -1,0 +1,41 @@
+jarvis-hyper/
+├── backend/
+│   ├── app.py                 # Main FastAPI app
+│   ├── requirements.txt       # Python deps
+│   ├── .env                   # ✅ BACKEND Environment variables (API keys, model)
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py          # Config management
+│   │   ├── voice.py           # ElevenLabs integration
+│   │   ├── ai.py              # LLM handling (Groq)
+│   │   └── data_collector.py  # Internet data
+│   └── routes/
+│       ├── __init__.py
+│       ├── chat.py            # Chat endpoints
+│       ├── voice.py           # Voice endpoints
+│       └── data.py            # Data endpoints
+├── frontend/
+│   ├── package.json
+│   ├── craco.config.js
+│   ├── tailwind.config.js
+│   ├── .env                   # ✅ FRONTEND Environment variables (network, ports)
+│   ├── public/
+│   │   └── index.html
+│   └── src/
+│       ├── index.js
+│       ├── index.css
+│       ├── App.js
+│       ├── App.css
+│       ├── pages/
+│       │   └── HyperPage.jsx
+│       ├── components/
+│       │   ├── Layout.jsx
+│       │   ├── Telemetry.jsx
+│       │   ├── ChatPanel.jsx
+│       │   ├── DataPanel.jsx
+│       │   └── VoiceButton.jsx
+│       └── lib/
+│           ├── api.js
+│           └── useVoice.js
+├── app-j.py                   # Launcher script
+└── README.md

@@ -1,0 +1,44 @@
+# ===== ENV FILES (API KEYS!) =====
+backend/.env
+frontend/.env
+*.env.local
+*.env.production
+.env
+
+# ===== PYTHON =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+*.egg-info/
+.pytest_cache/
+
+# ===== NODE / REACT =====
+node_modules/
+frontend/build/
+frontend/.cache/
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== LOGS =====
+*.log
+logs/
