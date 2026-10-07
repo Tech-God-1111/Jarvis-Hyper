@@ -1,41 +1,30 @@
 jarvis-hyper/
+│
 ├── backend/
-│   ├── app.py                 # Main FastAPI app
-│   ├── requirements.txt       # Python deps
-│   ├── .env                   # ✅ BACKEND Environment variables (API keys, model)
+│   ├── app.py                      # FastAPI main app (serves HTML + API)
+│   ├── requirements.txt            # Python dependencies
+│   ├── .env                        # API keys (NEVER commit)
+│   │
 │   ├── core/
 │   │   ├── __init__.py
-│   │   ├── config.py          # Config management
-│   │   ├── voice.py           # ElevenLabs integration
-│   │   ├── ai.py              # LLM handling (Groq)
-│   │   └── data_collector.py  # Internet data
-│   └── routes/
-│       ├── __init__.py
-│       ├── chat.py            # Chat endpoints
-│       ├── voice.py           # Voice endpoints
-│       └── data.py            # Data endpoints
-├── frontend/
-│   ├── package.json
-│   ├── craco.config.js
-│   ├── tailwind.config.js
-│   ├── .env                   # ✅ FRONTEND Environment variables (network, ports)
-│   ├── public/
-│   │   └── index.html
-│   └── src/
-│       ├── index.js
-│       ├── index.css
-│       ├── App.js
-│       ├── App.css
-│       ├── pages/
-│       │   └── HyperPage.jsx
-│       ├── components/
-│       │   ├── Layout.jsx
-│       │   ├── Telemetry.jsx
-│       │   ├── ChatPanel.jsx
-│       │   ├── DataPanel.jsx
-│       │   └── VoiceButton.jsx
-│       └── lib/
-│           ├── api.js
-│           └── useVoice.js
-├── app-j.py                   # Launcher script
-└── README.md
+│   │   ├── config.py               # Config loader (3-tier model configs)
+│   │   ├── ai.py                   # 3-tier Nemotron failover chain
+│   │   ├── voice.py                # ElevenLabs text-to-speech
+│   │   └── data_collector.py       # System stats (CPU, memory, etc.)
+│   │
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── chat.py                 # /api/chat/stream + app launcher
+│   │   ├── voice.py                # /api/voice/speak
+│   │   └── data.py                 # /api/data/* + /api/data/launch
+│   │
+│   └── static/                     # Frontend HTML (served by FastAPI)
+│       ├── index.html              # Login page (face recognition + password)
+│       ├── mega_index.html         # Main dashboard (chat, dashboard, security, settings, about)
+│       └── faces/                  # Reference photos for face recognition
+│           └── moses.jpg           # YOUR face reference photo
+│
+├── app-j.py                        # Launcher (starts FastAPI server)
+├── README.md                       # Project documentation
+├── .gitignore                      # Protects .env, node_modules, __pycache__
+└── .git/                           # Git history (if it exists)

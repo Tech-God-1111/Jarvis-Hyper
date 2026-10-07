@@ -1,119 +1,178 @@
+"""
+JARVIS-VOICE AI Service
+3-tier NVIDIA Nemotron failover chain using 3 separate API keys.
+
+Tier 1: Ultra 550B         — thinking ON
+Tier 2: Lightning 30B      — thinking OFF (fast)
+Tier 3: Nano Omni 30B      — thinking ON (reasoning fallback)
+"""
+
+import json
+from typing import Generator, Optional
 from openai import OpenAI
-from .config import config
-import time
+
+from core.config import (
+    MODEL_CONFIGS,
+    NVIDIA_BASE_URL,
+    SYSTEM_PROMPT,
+)
 
 
+# ============================================================
+# AI SERVICE
+# ============================================================
 class AIService:
     def __init__(self):
-        # Build one client per tier, each with its OWN key
-        self.tiers = []
-        for i, cfg in enumerate(config.MODEL_CONFIGS, start=1):
-            if not cfg["key"]:
-                print(f"[AI] WARNING: Tier {i} has no API key, skipping.")
-                continue
-            self.tiers.append({
-                "tier": i,
-                "model": cfg["model"],
-                "client": OpenAI(
-                    base_url="https://integrate.api.nvidia.com/v1",
-                    api_key=cfg["key"],
-                    timeout=90.0,
-                    max_retries=1,   # Failover handles retries
-                ),
-            })
-        self.system_prompt = config.SYSTEM_PROMPT
+        self.clients = {}
+        for mc in MODEL_CONFIGS:
+            tier = mc["tier"]
+            self.clients[tier] = OpenAI(
+                base_url=NVIDIA_BASE_URL,
+                api_key=mc["api_key"],
+                timeout=60.0,
+            )
+
+        self.tiers = MODEL_CONFIGS
         print(f"[AI] Loaded {len(self.tiers)} tiers:")
-        for t in self.tiers:
-            print(f"[AI]   Tier {t['tier']}: {t['model']}")
+        for mc in self.tiers:
+            think = "ON" if mc.get("enable_thinking") else "OFF"
+            print(f"[AI]   Tier {mc['tier']}: {mc['model']} (thinking: {think})")
 
-    def _call_tier(self, tier, messages):
-        """Call a specific tier with its own client/key"""
-        kwargs = {
-            "model": tier["model"],
-            "messages": messages,
-            "temperature": 0,
-            "top_p": 0.95,
-            "max_tokens": 1024,
-            "stream": True,
-        }
-        if "nemotron" in tier["model"].lower():
-            kwargs["extra_body"] = {
-                "chat_template_kwargs": {"enable_thinking": False}
+    # ----------------------------------------------------------
+    # BUILD extra_body FOR EACH TIER
+    # ----------------------------------------------------------
+    def _build_extra_body(self, tier_config: dict) -> Optional[dict]:
+        """
+        Build the extra_body for the request based on this tier's config.
+
+        - enable_thinking=True  → send chat_template_kwargs.enable_thinking=True
+        - enable_thinking=False → send chat_template_kwargs.enable_thinking=False
+        - Also include reasoning_budget if present
+        """
+        extra = {}
+
+        # Handle thinking flag explicitly (True OR False)
+        if "enable_thinking" in tier_config:
+            extra["chat_template_kwargs"] = {
+                "enable_thinking": bool(tier_config["enable_thinking"])
             }
-        return tier["client"].chat.completions.create(**kwargs)
 
-    def chat_stream_with_failover(self, messages):
-        """
-        Generator: tries each tier (each with its own key).
-        Retries top tier once if all fail.
-        """
-        full_messages = [{"role": "system", "content": self.system_prompt}] + messages
+        # Reasoning budget (only for reasoning-capable tiers)
+        if tier_config.get("reasoning_budget"):
+            extra["reasoning_budget"] = tier_config["reasoning_budget"]
 
-        # Pass 1: full chain. Pass 2: retry top tier after pause.
-        passes = [
-            ("Pass 1", self.tiers),
-            ("Pass 2 (retry top)", self.tiers[:1]),
-        ]
+        return extra if extra else None
 
-        for pass_label, tiers in passes:
-            for tier in tiers:
-                print(f"[AI] {pass_label} | Tier {tier['tier']}: {tier['model']}...")
-                try:
-                    stream = self._call_tier(tier, full_messages)
-                    got_any = False
-                    for chunk in stream:
-                        got_any = True
-                        yield chunk
+    # ----------------------------------------------------------
+    # SINGLE TIER ATTEMPT
+    # ----------------------------------------------------------
+    def _try_tier(self, tier_config: dict, messages: list) -> Optional[Generator]:
+        tier = tier_config["tier"]
+        model = tier_config["model"]
+        client = self.clients[tier]
+        think = "ON" if tier_config.get("enable_thinking") else "OFF"
 
-                    if got_any:
-                        print(f"[AI] {pass_label} | Tier {tier['tier']} SUCCESS")
-                        return
-                    else:
-                        print(f"[AI] {pass_label} | Tier {tier['tier']} empty, next...")
-                        continue
+        print(f"[AI] Pass 1 | Tier {tier} ({think}): {model}...")
 
-                except Exception as e:
-                    print(f"[AI] {pass_label} | Tier {tier['tier']} FAILED: {type(e).__name__}: {e}")
-                    continue
+        try:
+            extra = self._build_extra_body(tier_config)
 
-            if pass_label == "Pass 1":
-                print("[AI] All tiers failed. Waiting 3s before retry...")
-                time.sleep(3)
+            completion = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=0.7,
+                top_p=0.95,
+                max_tokens=tier_config.get("max_tokens", 4096),
+                extra_body=extra,
+                stream=True,
+            )
 
-        raise Exception("All Nemotron tiers failed after full retry.")
+            # Peek at the first chunk to confirm it works
+            first_chunk = None
+            try:
+                for chunk in completion:
+                    first_chunk = chunk
+                    break
+            except Exception as e:
+                raise e
 
-    def chat_sync(self, messages: list) -> str:
-        """Non-streaming with same failover"""
-        full_messages = [{"role": "system", "content": self.system_prompt}] + messages
+            if first_chunk is None:
+                raise RuntimeError("No chunks returned")
 
-        for pass_num in range(2):
-            for tier in self.tiers:
-                try:
-                    kwargs = {
-                        "model": tier["model"],
-                        "messages": full_messages,
-                        "temperature": 0,
-                        "top_p": 0.95,
-                        "max_tokens": 1024,
-                    }
-                    if "nemotron" in tier["model"].lower():
-                        kwargs["extra_body"] = {
-                            "chat_template_kwargs": {"enable_thinking": False}
-                        }
+            print(f"[AI] Pass 1 | Tier {tier} SUCCESS")
 
-                    response = tier["client"].chat.completions.create(**kwargs)
-                    print(f"[AI] Pass {pass_num + 1} | Tier {tier['tier']} SUCCESS")
-                    return response.choices[0].message.content
+            def _chain():
+                yield first_chunk
+                for c in completion:
+                    yield c
 
-                except Exception as e:
-                    print(f"[AI] Pass {pass_num + 1} | Tier {tier['tier']} FAILED: {e}")
-                    continue
+            return _chain()
 
-            if pass_num == 0:
-                print("[AI] Sync: all tiers failed, waiting 3s...")
-                time.sleep(3)
+        except Exception as e:
+            print(f"[AI] Pass 1 | Tier {tier} FAILED: {type(e).__name__}: {e}")
+            return None
 
-        raise Exception("All Nemotron tiers failed")
+    # ----------------------------------------------------------
+    # STREAMING CHAT WITH FAILOVER
+    # ----------------------------------------------------------
+    def chat_stream_with_failover(
+        self,
+        messages: list,
+        system_prompt: Optional[str] = None,
+    ):
+        full_messages = [
+            {"role": "system", "content": system_prompt or SYSTEM_PROMPT}
+        ] + messages
+
+        for tier_config in self.tiers:
+            result = self._try_tier(tier_config, full_messages)
+            if result is not None:
+                for chunk in result:
+                    yield chunk
+                return
+
+        print("[AI] ❌ ALL TIERS FAILED")
+        raise RuntimeError("All AI tiers failed. Check API keys and model availability.")
+
+    # ----------------------------------------------------------
+    # SYNC CHAT
+    # ----------------------------------------------------------
+    def chat_sync(self, messages: list, system_prompt: Optional[str] = None) -> str:
+        full_messages = [
+            {"role": "system", "content": system_prompt or SYSTEM_PROMPT}
+        ] + messages
+
+        for tier_config in self.tiers:
+            tier = tier_config["tier"]
+            model = tier_config["model"]
+            client = self.clients[tier]
+
+            print(f"[AI] Sync | Tier {tier}: {model}...")
+            try:
+                extra = self._build_extra_body(tier_config)
+
+                completion = client.chat.completions.create(
+                    model=model,
+                    messages=full_messages,
+                    temperature=0.7,
+                    top_p=0.95,
+                    max_tokens=tier_config.get("max_tokens", 4096),
+                    extra_body=extra,
+                    stream=False,
+                )
+
+                content = completion.choices[0].message.content or ""
+                print(f"[AI] Sync | Tier {tier} SUCCESS ({len(content)} chars)")
+                return content
+
+            except Exception as e:
+                print(f"[AI] Sync | Tier {tier} FAILED: {type(e).__name__}: {e}")
+                continue
+
+        raise RuntimeError("All AI tiers failed (sync mode).")
 
 
+# ============================================================
+# SINGLETON
+# ============================================================
 ai_service = AIService()

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS-HYPER</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+<style>
+
+:root{--bg:#05080b;--panel:#0a0f14;--panel2:#0d141b;--line:#22303b;--text:#e7f4f8;--muted:#657886;--accent:#64e5ff;--warm:#ffb56a;--ok:#72efad;--danger:#ff6575;font-family:Inter,'Segoe UI',Arial,sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);overflow:hidden}body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 70% 15%,rgba(100,229,255,.08),transparent 25%),radial-gradient(circle at 20% 80%,rgba(255,181,106,.05),transparent 22%);pointer-events:none;z-index:-2}body:after{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:38px 38px;opacity:.45;pointer-events:none;z-index:-1}
+.topbar{height:68px;background:rgba(5,8,11,.94);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:relative}.topbar:after{content:"";position:absolute;left:0;bottom:-1px;width:28%;height:1px;background:var(--accent);box-shadow:0 0 18px var(--accent)}.brand{font-family:Georgia,'Times New Roman',serif;letter-spacing:6px;font-size:18px;color:#f4fbff}.brand:before{content:"◈";color:var(--accent);margin-right:10px;font-family:Arial}.topbar-status{display:flex;align-items:center;gap:18px;color:#718492;font-size:10px;letter-spacing:1.5px;text-transform:uppercase}.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px}.dot-red{background:var(--danger);box-shadow:0 0 10px var(--danger)}.dot-cyan{background:var(--accent);box-shadow:0 0 10px var(--accent)}.dot-amber{background:var(--warm);box-shadow:0 0 10px var(--warm)}
+.layout{display:flex;height:calc(100vh - 68px)}.sidebar{width:82px;background:#070b0f;border-right:1px solid var(--line);padding:18px 10px;display:flex;flex-direction:column;gap:8px}.sidebar-item{height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:#566b78;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid transparent;position:relative;transition:.2s}.sidebar-item i{font-size:15px}.sidebar-item:hover{color:#b9d2db;background:#0a1117}.sidebar-item.active{color:var(--accent);border-color:#203846;background:linear-gradient(180deg,#0c171f,#081016)}.sidebar-item.active:before{content:"";position:absolute;left:-11px;width:2px;height:28px;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+.main-content{flex:1;overflow:auto;padding:34px 42px 70px}.page-section{display:none;max-width:1320px;margin:auto}.page-section.active{display:block}.page-title{font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;letter-spacing:1px;margin-bottom:5px}.page-subtitle{color:#637785;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px}.card,.chat-container{background:linear-gradient(145deg,rgba(13,20,27,.95),rgba(7,11,15,.96));border:1px solid var(--line)!important;border-radius:2px!important;box-shadow:0 18px 45px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.025)}.card-body{padding:22px}.card h5,.card h6{font-weight:500;letter-spacing:.5px}.text-muted,.stat-desc{color:var(--muted)!important}.stat-card{min-height:132px;position:relative;overflow:hidden}.stat-card:after{content:"";position:absolute;right:-25px;bottom:-45px;width:100px;height:100px;border:1px solid rgba(100,229,255,.1);transform:rotate(45deg)}.stat-value{font-family:Georgia,serif;font-size:31px;color:#f1fbff}.stat-label{color:#718593;font-size:9px;letter-spacing:2px;text-transform:uppercase}.stat-card.success{border-left:2px solid var(--ok)!important}.stat-card.warning{border-left:2px solid var(--warm)!important}.chart-wrapper{min-height:280px}
+.chat-container{min-height:calc(100vh - 190px);display:flex;flex-direction:column;position:relative}.chat-container:before{content:"LIVE CHANNEL // 01";position:absolute;right:18px;top:-22px;color:#3f5665;font-size:8px;letter-spacing:2px}.chat-header{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;color:#9db3be;font-size:10px;letter-spacing:1.5px;text-transform:uppercase}.chat-messages{flex:1;overflow:auto;padding:30px;display:flex;flex-direction:column;gap:18px}.chat-msg{max-width:78%;padding:15px 18px;border-left:2px solid #334550;background:#0b1117;color:#c9d8de;line-height:1.65;font-size:13px}.chat-msg .meta{font-size:8px;letter-spacing:2px;color:#617987;margin-bottom:7px}.chat-msg.jarvis{align-self:flex-start;border-left-color:var(--accent);background:linear-gradient(90deg,rgba(100,229,255,.055),rgba(100,229,255,.01))}.chat-msg.user{align-self:flex-end;border-left:0;border-right:2px solid var(--warm);background:linear-gradient(270deg,rgba(255,181,106,.06),transparent)}.chat-input-area{display:grid;grid-template-columns:auto auto auto 1fr auto;gap:8px;padding:14px;border-top:1px solid var(--line);background:#070b0f}.icon-btn,.chat-input-area button{border:1px solid #263743;background:#0a1016;color:#77909d;height:42px;min-width:42px;border-radius:0}.icon-btn:hover,.icon-btn.active{color:var(--accent);border-color:#315160}.chat-input-area input{background:#05090d;border:1px solid #263743;color:#e7f4f8;padding:0 14px;outline:none;min-width:0}.chat-input-area input:focus{border-color:var(--accent)}.chat-input-area>#sendBtn{padding:0 20px;color:var(--accent);border-color:var(--accent);font-size:10px;letter-spacing:1px;text-transform:uppercase}.voice-banner{border:1px solid #35505d!important;background:#091218!important;color:var(--accent)!important;padding:10px 14px!important;font-size:10px;letter-spacing:1px}
+.table{--bs-table-bg:transparent!important;color:#bdd0d7!important}.table thead th{color:#627985;border-bottom-color:#2a3b46!important;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}.table td{border-color:#1d2a33!important;font-size:12px}.badge-status{border-radius:0!important;padding:5px 8px!important;font-size:8px!important;letter-spacing:1px}.form-control,.form-range{background-color:#080d12!important}.form-control{border:1px solid #263743!important;border-radius:0!important;color:#e7f4f8!important}.form-control:focus{border-color:var(--accent)!important;box-shadow:none!important}.form-check-input:checked{background-color:var(--accent)!important;border-color:var(--accent)!important}.btn-outline-secondary{border-color:#31424d!important;color:#8195a0!important;border-radius:0!important}.btn-outline-secondary:hover{background:#0d171e!important;color:var(--accent)!important;border-color:var(--accent)!important}
+@media(max-width:850px){body{overflow:auto}.topbar{padding:0 14px}.topbar-status{gap:7px;font-size:8px}.topbar-status span:nth-child(2),.topbar-status span:nth-child(3){display:none}.layout{height:auto;min-height:calc(100vh - 68px)}.sidebar{width:64px}.main-content{padding:24px 18px 60px}.page-title{font-size:26px}.chat-input-area{grid-template-columns:auto auto auto 1fr}.chat-input-area>#sendBtn{grid-column:1/-1}.chat-msg{max-width:90%}}
+@media(max-width:520px){.sidebar{width:58px}.sidebar-item{height:54px;font-size:7px}.main-content{padding:20px 12px}.topbar .brand{font-size:14px;letter-spacing:3px}.chat-messages{padding:18px 12px}.chat-input-area{grid-template-columns:repeat(3,42px) 1fr}.chat-input-area input{grid-column:1/-1;grid-row:2}.chat-input-area>#sendBtn{grid-row:3}}
+
+    </style>
+
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="brand">
+            <i class="fas fa-shield-alt" style="color: var(--accent); font-size: 1.3rem;"></i>
+            <div>
+                <h1>JARVIS-HYPER</h1>
+                <span>STARK INDUSTRIES // MK-VII</span>
+            </div>
+        </div>
+        <div class="topbar-status">
+            <span><span class="status-dot dot-red" id="statusDot"></span><span id="statusText">OFFLINE</span></span>
+            <span><span class="status-dot dot-cyan"></span>NVIDIA NIM</span>
+            <span><span class="status-dot dot-amber"></span>ELEVENLABS</span>
+            <span><i class="fas fa-user-circle me-1"></i><span id="userName">Sir</span></span>
+            <button class="btn btn-sm btn-outline-secondary" onclick="logout()">
+                <i class="fas fa-lock"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- LAYOUT -->
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-item active" onclick="showPage('chat', this)">
+                <i class="fas fa-comments"></i>Chat
+            </div>
+            <div class="sidebar-item" onclick="showPage('dashboard', this)">
+                <i class="fas fa-tachometer-alt"></i>Dashboard
+            </div>
+            <div class="sidebar-item" onclick="showPage('security', this)">
+                <i class="fas fa-user-shield"></i>Security
+            </div>
+            <div class="sidebar-item" onclick="showPage('settings', this)">
+                <i class="fas fa-cog"></i>Settings
+            </div>
+            <div class="sidebar-item" onclick="showPage('about', this)">
+                <i class="fas fa-info-circle"></i>About
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+
+            <!-- CHAT PAGE -->
+            <div class="page-section active" id="page-chat">
+                <div class="page-title">JARVIS <span style="color:var(--accent);font-weight:400;">/</span> Command Terminal</div>
+                <div class="page-subtitle">Secure conversational interface • Voice, files & streamed responses</div>
+
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <span><i class="fas fa-circle" style="color: var(--success); font-size: 0.5rem;"></i> J.A.R.V.I.S ONLINE</span>
+                        <span id="chatStatus">Ready</span>
+                    </div>
+
+                    <!-- Voice status banner -->
+                    <div id="voiceBanner" style="display: none; margin: 12px 20px 0 20px;" class="voice-banner recording">
+                        <i class="fas fa-microphone"></i>
+                        <span id="voiceBannerText">Listening...</span>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-msg jarvis">
+                            <div class="meta">JARVIS</div>
+                            Welcome, Sir. JARVIS online. How may I assist?
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <button class="icon-btn" id="micBtn" onclick="toggleMic()" title="Voice input">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="icon-btn active" id="voiceOutBtn" onclick="toggleVoiceOut()" title="Voice output">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="fileInput" style="display: none;" onchange="handleFileSelect(event)" accept=".txt,.md,.py,.js,.json,.csv,.log,.xml,.yaml,.yml,.html,.css">
+                        <input type="text" id="chatInput" placeholder="Address JARVIS..." onkeydown="handleChatKey(event)">
+                        <button onclick="sendChat()" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                    <div id="attachmentBar" style="display: none; padding: 8px 20px; border-top: 1px solid #2a2a4a; background: rgba(0, 188, 212, 0.05);">
+                        <span style="color: var(--accent); font-size: 0.85rem;">
+                            <i class="fas fa-paperclip"></i>
+                            <span id="attachmentName"></span>
+                            <button onclick="clearAttachment()" style="background: none; border: none; color: var(--danger); margin-left: 10px; cursor: pointer;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD PAGE -->
+            <div class="page-section" id="page-dashboard">
+                <div class="page-title">Dashboard</div>
+                <div class="page-subtitle">System overview and metrics</div>
+
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <div class="stat-label">CPU Load</div>
+                                <div class="stat-value" id="cpuStat">--%</div>
+                                <div class="stat-desc">Current usage</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card success">
+                            <div class="card-body">
+                                <div class="stat-label">Memory</div>
+                                <div class="stat-value" id="memStat">--%</div>
+                                <div class="stat-desc">Active allocation</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card warning">
+                            <div class="card-body">
+                                <div class="stat-label">Uptime</div>
+                                <div class="stat-value" id="uptimeStat">--</div>
+                                <div class="stat-desc">Session duration</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <div class="stat-label">Model</div>
+                                <div class="stat-value" style="font-size: 1.1rem;">Nemotron 3</div>
+                                <div class="stat-desc">550B Ultra</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="mb-3">Activity Timeline</h5>
+                                <div class="chart-wrapper">
+                                    <canvas id="activityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="mb-3">System Status</h5>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Backend</span>
+                                    <span class="badge-status badge-success" id="backendStatus">Checking...</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">NVIDIA API</span>
+                                    <span class="badge-status badge-success">Connected</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">ElevenLabs</span>
+                                    <span class="badge-status badge-success">Ready</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Voice Recognition</span>
+                                    <span class="badge-status badge-info" id="voiceRecStatus">Idle</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Face Detection</span>
+                                    <span class="badge-status badge-warning" id="faceDetStatus">Idle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECURITY PAGE -->
+            <div class="page-section" id="page-security">
+                <div class="page-title">Security</div>
+                <div class="page-subtitle">Face recognition and access logs</div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-shield" style="font-size: 3rem; color: var(--accent);"></i>
+                                <div class="stat-value mt-3" id="enrolledCount">0</div>
+                                <div class="stat-desc">Enrolled Faces</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success);"></i>
+                                <div class="stat-value mt-3" id="grantedCount">0</div>
+                                <div class="stat-desc">Access Granted</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-times-circle" style="font-size: 3rem; color: var(--danger);"></i>
+                                <div class="stat-value mt-3" id="deniedCount">0</div>
+                                <div class="stat-desc">Access Denied</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="mb-3">Access Log</h5>
+                        <div class="table-responsive">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Subject</th>
+                                        <th>Status</th>
+                                        <th>Confidence</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accessLog">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-dim);">No access logs yet</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS PAGE -->
+            <div class="page-section" id="page-settings">
+                <div class="page-title">Settings</div>
+                <div class="page-subtitle">Configure JARVIS-HYPER</div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="mb-3">Voice</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Voice Speed</label>
+                            <input type="range" class="form-range" min="0.5" max="1.5" step="0.1" value="1.0" id="voiceSpeedSlider">
+                            <small class="text-muted">Current: <span id="voiceSpeedVal">1.0</span></small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Voice Pitch</label>
+                            <input type="range" class="form-range" min="0.5" max="1.5" step="0.1" value="0.9" id="voicePitchSlider">
+                            <small class="text-muted">Current: <span id="voicePitchVal">0.9</span></small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" checked id="autoSpeakToggle">
+                            <label class="form-check-label">Auto-speak responses</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="mb-3">Security</h5>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" checked>
+                            <label class="form-check-label">Require face recognition on startup</label>
+                        </div>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" checked>
+                            <label class="form-check-label">Log all access attempts</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">Enable auto-lock after 5 min idle</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABOUT PAGE -->
+            <div class="page-section" id="page-about">
+                <div class="page-title">About JARVIS-HYPER</div>
+                <div class="page-subtitle">Project information</div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5><i class="fas fa-shield-alt me-2" style="color: var(--accent);"></i>JARVIS-HYPER</h5>
+                        <p class="mt-3">
+                            A hyper-intelligent AI assistant with voice interaction, face recognition
+                            security, and a modern web interface. Built as a science exhibition project.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6><i class="fas fa-brain me-2"></i>AI Stack</h6>
+                                <ul class="mt-3 mb-0" style="font-size: 0.9rem;">
+                                    <li>NVIDIA NIM (Nemotron 3 Ultra 550B)</li>
+                                    <li>3-tier failover chain</li>
+                                    <li>ElevenLabs British voice</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6><i class="fas fa-code me-2"></i>Tech Stack</h6>
+                                <ul class="mt-3 mb-0" style="font-size: 0.9rem;">
+                                    <li>FastAPI backend</li>
+                                    <li>Python + OpenCV (face)</li>
+                                    <li>HTML + Bootstrap 5 (UI)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="color: var(--text-dim); font-size: 0.85rem;">
+                            Created by <strong style="color: var(--accent);">Moses</strong> // 2026
+                        </div>
+                        <div style="color: var(--text-dim); font-size: 0.75rem; margin-top: 6px;">
+                            Science Exhibition Project
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIG
+        // ============================================================
+        const API_BASE = `/api`;
+
+        if (sessionStorage.getItem('jarvis.auth') !== 'yes') {
+            window.location.href = 'index.html';
+        }
+        document.getElementById('userName').textContent = sessionStorage.getItem('jarvis.user') || 'Sir';
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let sessionId = null;
+        let chatBusy = false;
+        let voiceRecognition = null;
+        let isListening = false;
+        let voiceOutEnabled = true;
+        let attachment = null;
+        let voiceSpeed = 1.0;
+        let voicePitch = 0.9;
+        let activityChart = null;
+        let chartInitialized = false;
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        function showPage(pageId, element) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            if (pageId === 'dashboard') refreshDashboard();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('jarvis.auth');
+            window.location.href = 'index.html';
+        }
+
+        // ============================================================
+        // CHAT
+        // ============================================================
+        function handleChatKey(event) {
+            if (event.key === 'Enter') sendChat();
+        }
+
+        async function sendChat() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text || chatBusy) return;
+
+            addMessage(text, 'user', !!attachment);
+            input.value = '';
+            chatBusy = true;
+            document.getElementById('sendBtn').disabled = true;
+
+            const jarvisMsgEl = addMessage('', 'jarvis', false);
+            const bubbleEl = jarvisMsgEl.querySelector('.msg-text');
+
+            try {
+                const response = await fetch(`${API_BASE}/chat/stream`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        session_id: sessionId,
+                        speak: voiceOutEnabled,
+                        attachment: attachment,
+                    }),
+                });
+
+                if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let fullResponse = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n\n');
+                    buffer = lines.pop() || '';
+
+                    for (const line of lines) {
+                        if (!line.startsWith('data:')) continue;
+                        const payload = line.slice(5).trim();
+                        if (!payload) continue;
+
+                        try {
+                            const evt = JSON.parse(payload);
+                            if (evt.type === 'session') {
+                                sessionId = evt.session_id;
+                            } else if (evt.type === 'delta') {
+                                fullResponse += evt.content;
+                                bubbleEl.textContent = fullResponse;
+                                scrollChat();
+                            } else if (evt.type === 'voice') {
+                                try {
+                                    const bytes = new Uint8Array(evt.audio);
+                                    const blob = new Blob([bytes], { type: 'audio/mpeg' });
+                                    const url = URL.createObjectURL(blob);
+                                    const audio = new Audio(url);
+                                    audio.play();
+                                } catch (err) {
+                                    console.error('Audio playback error:', err);
+                                }
+                            } else if (evt.type === 'error') {
+                                bubbleEl.textContent = '[Error: ' + evt.message + ']';
+                                bubbleEl.style.color = 'var(--danger)';
+                            }
+                        } catch (e) {
+                            console.warn('Parse error:', e);
+                        }
+                    }
+                }
+            } catch (err) {
+                bubbleEl.textContent = '[Connection error: ' + err.message + ']';
+                bubbleEl.style.color = 'var(--danger)';
+            } finally {
+                chatBusy = false;
+                document.getElementById('sendBtn').disabled = false;
+                clearAttachment();
+            }
+        }
+
+        function addMessage(text, role, hasAttachment = false) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = `chat-msg ${role}`;
+            div.innerHTML = `
+                <div class="meta">${role === 'user' ? 'USER' : 'JARVIS'}${hasAttachment ? ' [FILE]' : ''}</div>
+                <div class="msg-text">${text}</div>
+            `;
+            container.appendChild(div);
+            scrollChat();
+            return div;
+        }
+
+        function scrollChat() {
+            const container = document.getElementById('chatMessages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // ============================================================
+        // VOICE RECOGNITION — FIXED
+        // ============================================================
+        function showVoiceBanner(text, type = 'recording') {
+            const banner = document.getElementById('voiceBanner');
+            const bannerText = document.getElementById('voiceBannerText');
+            banner.className = `voice-banner ${type}`;
+            bannerText.textContent = text;
+            banner.style.display = 'flex';
+
+            if (type !== 'recording') {
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function hideVoiceBanner() {
+            document.getElementById('voiceBanner').style.display = 'none';
+        }
+
+        function toggleMic() {
+            console.log('[MIC] toggleMic called, isListening =', isListening);
+
+            const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Rec) {
+                console.error('[MIC] SpeechRecognition not supported');
+                showVoiceBanner('❌ Speech recognition not supported in this browser. Try Chrome or Edge.', 'warning');
+                return;
+            }
+
+            console.log('[MIC] SpeechRecognition available');
+
+            // If already listening, stop
+            if (isListening) {
+                console.log('[MIC] Stopping recognition');
+                if (voiceRecognition) voiceRecognition.stop();
+                return;
+            }
+
+            // Create new recognition instance
+            voiceRecognition = new Rec();
+            voiceRecognition.lang = 'en-GB';
+            voiceRecognition.interimResults = false;
+            voiceRecognition.continuous = false;
+
+            voiceRecognition.onstart = () => {
+                console.log('[MIC] onstart fired');
+                isListening = true;
+                document.getElementById('micBtn').classList.add('recording');
+                document.getElementById('chatStatus').textContent = '🎤 Listening...';
+                document.getElementById('voiceRecStatus').textContent = 'Listening';
+                document.getElementById('voiceRecStatus').className = 'badge-status badge-info';
+                showVoiceBanner('🎤 Listening... speak now', 'recording');
+            };
+
+            voiceRecognition.onspeechend = () => {
+                console.log('[MIC] onspeechend fired');
+            };
+
+            voiceRecognition.onend = () => {
+                console.log('[MIC] onend fired');
+                isListening = false;
+                document.getElementById('micBtn').classList.remove('recording');
+                document.getElementById('chatStatus').textContent = 'Ready';
+                document.getElementById('voiceRecStatus').textContent = 'Idle';
+                document.getElementById('voiceRecStatus').className = 'badge-status badge-info';
+            };
+
+            voiceRecognition.onerror = (e) => {
+                console.error('[MIC] Error:', e.error, e.message);
+                isListening = false;
+                document.getElementById('micBtn').classList.remove('recording');
+                document.getElementById('chatStatus').textContent = 'Ready';
+
+                let msg = '';
+                switch (e.error) {
+                    case 'not-allowed':
+                        msg = '❌ Microphone access denied. Check browser permissions (lock icon in URL bar).';
+                        break;
+                    case 'no-speech':
+                        msg = '⚠️ No speech detected. Try again.';
+                        break;
+                    case 'audio-capture':
+                        msg = '❌ No microphone found on this device.';
+                        break;
+                    case 'network':
+                        msg = '❌ Network error. Speech recognition needs internet.';
+                        break;
+                    case 'aborted':
+                        msg = '⚠️ Recognition aborted.';
+                        break;
+                    default:
+                        msg = `❌ Error: ${e.error}`;
+                }
+                showVoiceBanner(msg, 'warning');
+            };
+
+            voiceRecognition.onresult = (event) => {
+                console.log('[MIC] Result received');
+                const text = event.results[0][0].transcript;
+                console.log('[MIC] Heard:', text);
+                document.getElementById('chatInput').value = text;
+                showVoiceBanner(`✅ Heard: "${text}"`, 'success');
+                setTimeout(() => {
+                    hideVoiceBanner();
+                    sendChat();
+                }, 500);
+            };
+
+            try {
+                console.log('[MIC] Starting recognition...');
+                voiceRecognition.start();
+            } catch (err) {
+                console.error('[MIC] Failed to start:', err);
+                showVoiceBanner('❌ Failed to start recognition: ' + err.message, 'warning');
+            }
+        }
+
+        function toggleVoiceOut() {
+            voiceOutEnabled = !voiceOutEnabled;
+            const btn = document.getElementById('voiceOutBtn');
+            btn.classList.toggle('active', voiceOutEnabled);
+            btn.innerHTML = voiceOutEnabled
+                ? '<i class="fas fa-volume-up"></i>'
+                : '<i class="fas fa-volume-mute"></i>';
+        }
+
+        // ============================================================
+        // FILE ATTACHMENT
+        // ============================================================
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 800_000) {
+                alert('File too large (max 800KB)');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                attachment = {
+                    name: file.name,
+                    mime: file.type || 'text/plain',
+                    content: e.target.result,
+                };
+                document.getElementById('attachmentName').textContent =
+                    `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                document.getElementById('attachmentBar').style.display = 'block';
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function clearAttachment() {
+            attachment = null;
+            document.getElementById('attachmentBar').style.display = 'none';
+            document.getElementById('attachmentName').textContent = '';
+        }
+
+        const chatContainer = document.querySelector('.chat-container');
+        ['dragover', 'dragenter'].forEach(evt => {
+            chatContainer.addEventListener(evt, (e) => e.preventDefault());
+        });
+        chatContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files.length) {
+                handleFileSelect({ target: { files: e.dataTransfer.files, value: '' } });
+            }
+        });
+
+        // ============================================================
+        // DASHBOARD
+        // ============================================================
+        async function refreshDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/data/system`);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('cpuStat').textContent = (data.cpu || 0) + '%';
+                    document.getElementById('memStat').textContent = (data.memory || 0) + '%';
+                    document.getElementById('backendStatus').textContent = 'Online';
+                    document.getElementById('backendStatus').className = 'badge-status badge-success';
+                    document.getElementById('statusDot').className = 'status-dot dot-green';
+                    document.getElementById('statusText').textContent = 'ONLINE';
+                }
+            } catch (err) {
+                document.getElementById('backendStatus').textContent = 'Offline';
+                document.getElementById('backendStatus').className = 'badge-status badge-danger';
+                document.getElementById('statusDot').className = 'status-dot dot-red';
+                document.getElementById('statusText').textContent = 'OFFLINE';
+            }
+
+            const start = parseInt(sessionStorage.getItem('jarvis.start') || Date.now());
+            sessionStorage.setItem('jarvis.start', start);
+            const elapsed = Math.floor((Date.now() - start) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            document.getElementById('uptimeStat').textContent = `${mins}m ${secs}s`;
+        }
+
+        function initChart() {
+            if (chartInitialized) return;
+            const canvas = document.getElementById('activityChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', 'Now'],
+                    datasets: [{
+                        label: 'Requests',
+                        data: [12, 8, 24, 45, 38, 52, 28],
+                        borderColor: '#00bcd4',
+                        backgroundColor: 'rgba(0, 188, 212, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    plugins: { legend: { labels: { color: '#888' } } },
+                    scales: {
+                        x: { ticks: { color: '#888' }, grid: { color: '#2a2a4a' } },
+                        y: { ticks: { color: '#888' }, grid: { color: '#2a2a4a' } },
+                    },
+                },
+            });
+            chartInitialized = true;
+        }
+
+        // ============================================================
+        // SETTINGS
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const speedSlider = document.getElementById('voiceSpeedSlider');
+            const pitchSlider = document.getElementById('voicePitchSlider');
+
+            if (speedSlider) {
+                speedSlider.addEventListener('input', () => {
+                    voiceSpeed = parseFloat(speedSlider.value);
+                    document.getElementById('voiceSpeedVal').textContent = voiceSpeed.toFixed(1);
+                });
+            }
+            if (pitchSlider) {
+                pitchSlider.addEventListener('input', () => {
+                    voicePitch = parseFloat(pitchSlider.value);
+                    document.getElementById('voicePitchVal').textContent = voicePitch.toFixed(1);
+                });
+            }
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        window.addEventListener('load', () => {
+            console.log('[INIT] JARVIS-HYPER loaded');
+
+            // Check SpeechRecognition support
+            const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            console.log('[INIT] SpeechRecognition supported:', !!Rec);
+            if (Rec) {
+                console.log('[INIT] Using:', Rec.name || 'SpeechRecognition');
+            }
+
+            // Check protocol (mic needs HTTPS or localhost)
+            const isSecure = window.location.protocol === 'https:' ||
+                             window.location.hostname === 'localhost' ||
+                             window.location.hostname === '127.0.0.1';
+            console.log('[INIT] Secure context:', isSecure, '(' + window.location.origin + ')');
+            if (!isSecure) {
+                console.warn('[INIT] ⚠️ Mic may not work over HTTP on non-localhost. Use localhost or HTTPS.');
+            }
+
+            initChart();
+            sessionStorage.setItem('jarvis.start', Date.now());
+            setTimeout(refreshDashboard, 1000);
+            setInterval(refreshDashboard, 5000);
+        });
+    </script>
+
+</body>
+</html>
