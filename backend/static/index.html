@@ -6,25 +6,154 @@
     <title>JARVIS-HYPER - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
 <style>
 
 :root{--ink:#05070b;--panel:#0a0f16;--panel2:#0d141d;--line:#253241;--ice:#dff7ff;--muted:#718294;--accent:#62e6ff;--hot:#ffb86b;--ok:#73f5b0;--danger:#ff6b7a;--serif:Georgia,'Times New Roman',serif;--sans:Inter,'Segoe UI',Arial,sans-serif}
-*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{background:var(--ink);color:var(--ice);font-family:var(--sans);display:flex;align-items:stretch;justify-content:center;overflow:hidden;position:relative}
+*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{background:var(--ink);color:var(--ice);font-family:var(--sans);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 18% 20%,rgba(98,230,255,.12),transparent 28%),radial-gradient(circle at 82% 80%,rgba(255,184,107,.08),transparent 26%),linear-gradient(115deg,#030509,#071018 48%,#04070b);z-index:-3}
 body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:46px 46px;mask-image:linear-gradient(to bottom,black,transparent 85%);z-index:-2}
-.login-card{width:min(1080px,94vw);min-height:min(690px,92vh);margin:auto;display:grid;grid-template-columns:1.05fr .95fr;background:linear-gradient(135deg,rgba(13,20,29,.97),rgba(5,8,12,.98));border:1px solid #1d2a37;box-shadow:0 35px 90px rgba(0,0,0,.6),inset 0 1px rgba(255,255,255,.035);position:relative;overflow:hidden;border-radius:3px}
-.login-card:before{content:"JARVIS // ACCESS NODE 07";position:absolute;top:17px;left:22px;font-size:10px;letter-spacing:3px;color:#536678}.login-card:after{content:"";position:absolute;right:0;top:0;width:34%;height:100%;background:linear-gradient(90deg,transparent,rgba(98,230,255,.025));pointer-events:none}
-.brand{grid-column:1;display:flex;flex-direction:column;justify-content:center;padding:90px 64px 64px;border-right:1px solid #1c2833;position:relative}.brand:before{content:"";width:150px;height:150px;border:1px solid rgba(98,230,255,.2);border-radius:50%;position:absolute;top:80px;left:50%;transform:translateX(-50%);box-shadow:0 0 55px rgba(98,230,255,.06)}
-.brand h1{font-family:var(--serif);font-weight:400;letter-spacing:8px;font-size:clamp(2rem,4vw,3.5rem);margin:120px 0 12px;color:#f3fbff;position:relative}.brand h1 i{color:var(--accent);font-size:.7em}.brand p{margin:0;color:#71899b;letter-spacing:4px;font-size:11px;text-transform:uppercase}
-.system-line{margin-top:34px;display:flex;align-items:center;gap:10px;color:#879baa;font-size:11px;letter-spacing:1.5px}.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 16px var(--ok);animation:pulse 1.8s infinite}.security-note{margin-top:28px;padding-top:20px;border-top:1px solid #1c2833;color:#566b7c;font-size:11px;line-height:1.8;max-width:390px}.corner{position:absolute;width:34px;height:34px;border-color:#345060!important;opacity:.8}.corner.tl{top:16px;left:16px;border-top:1px solid;border-left:1px solid}.corner.tr{top:16px;right:16px;border-top:1px solid;border-right:1px solid}.corner.bl{bottom:16px;left:16px;border-bottom:1px solid;border-left:1px solid}.corner.br{bottom:16px;right:16px;border-bottom:1px solid;border-right:1px solid}
-.login-card> .nav-tabs{grid-column:2;align-self:end;margin:0 48px;border:0;display:flex;gap:28px}.nav-tabs .nav-link{border:0!important;border-bottom:1px solid transparent!important;border-radius:0;color:#566978;background:transparent;padding:12px 0;font-size:11px;letter-spacing:2px;text-transform:uppercase}.nav-tabs .nav-link.active{color:var(--accent);background:transparent;border-bottom-color:var(--accent)!important}
-#faceMode,#passwordMode{grid-column:2;padding:28px 48px 64px;align-self:start}.camera-box{aspect-ratio:4/3;background:#020406;border:1px solid #263744;border-radius:0;position:relative;overflow:hidden;margin-bottom:20px;box-shadow:inset 0 0 0 10px #071018,inset 0 0 60px rgba(98,230,255,.08)}.camera-box:before,.camera-box:after{content:"";position:absolute;pointer-events:none}.camera-box:before{inset:12%;border:1px solid rgba(98,230,255,.25);clip-path:polygon(0 0,18% 0,18% 2px,0 2px,0 18%,2px 18%,2px 0,100% 0,100% 18%,calc(100% - 2px) 18%,calc(100% - 2px) 0,100% 0,100% 100%,82% 100%,82% calc(100% - 2px),100% calc(100% - 2px),100% 82%,calc(100% - 2px) 82%,calc(100% - 2px) 100%,0 100%,0 82%,2px 82%,2px 100%,0 100%)}.camera-box:after{width:60%;height:1px;left:20%;top:50%;background:rgba(98,230,255,.35);box-shadow:0 0 20px var(--accent);animation:scan 3s linear infinite}.camera-box video{width:100%;height:100%;object-fit:cover;filter:saturate(.7) contrast(1.1)}.camera-box .placeholder{color:#536879;font-size:11px;letter-spacing:2px;text-transform:uppercase}.camera-box .placeholder i{font-size:2rem;color:#35505f;display:block;margin-bottom:15px}
-.form-label{color:#708595;font-size:10px;letter-spacing:2px;text-transform:uppercase}.form-control{background:#070c11!important;border:1px solid #263744!important;color:#e9f8ff!important;border-radius:0;padding:13px 14px}.form-control:focus{border-color:var(--accent)!important;box-shadow:0 0 0 1px rgba(98,230,255,.15)!important}.btn-primary{background:transparent!important;border:1px solid var(--accent)!important;color:var(--accent)!important;border-radius:0!important;text-transform:uppercase;letter-spacing:2px;font-size:11px;padding:13px}.btn-primary:hover{background:var(--accent)!important;color:#041016!important;box-shadow:0 0 28px rgba(98,230,255,.18)}.status-text{font-size:10px;letter-spacing:1px;margin-top:13px;text-align:left}.status-success{color:var(--ok)}.status-error{color:var(--danger)}.status-info{color:#71899b}.brand-icon{color:var(--accent)}
-@keyframes pulse{50%{opacity:.35;transform:scale(.75)}}@keyframes scan{0%{transform:translateY(-130px);opacity:0}20%,80%{opacity:1}100%{transform:translateY(130px);opacity:0}}
-@media(max-width:760px){body{overflow:auto}.login-card{grid-template-columns:1fr;width:94vw;min-height:auto;margin:24px auto}.brand{grid-column:1;border-right:0;border-bottom:1px solid #1c2833;padding:70px 30px 35px}.brand h1{font-size:2rem;margin-top:100px}.login-card>.nav-tabs{grid-column:1;margin:25px 30px 0}.login-card>#faceMode,.login-card>#passwordMode{grid-column:1;padding:20px 30px 35px}.brand:before{top:55px}.login-card:before{font-size:8px}}
 
-    </style>
+.login-card{
+  width:min(1000px,92vw);
+  min-height:min(690px,92vh);
+  max-height:92vh;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  grid-template-rows:auto 1fr;
+  background:linear-gradient(135deg,rgba(13,20,29,.97),rgba(5,8,12,.98));
+  border:1px solid #1d2a37;
+  box-shadow:0 35px 90px rgba(0,0,0,.6),inset 0 1px rgba(255,255,255,.035);
+  position:relative;
+  overflow:hidden;
+  border-radius:3px;
+}
+.login-card:before{content:"JARVIS // ACCESS NODE 07";position:absolute;top:17px;left:22px;font-size:10px;letter-spacing:3px;color:#536678;z-index:2}
+.login-card:after{content:"";position:absolute;right:0;top:0;width:34%;height:100%;background:linear-gradient(90deg,transparent,rgba(98,230,255,.025));pointer-events:none}
+
+.brand{
+  grid-column:1;
+  grid-row:1 / span 2;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:90px 64px 64px;
+  border-right:1px solid #1c2833;
+  position:relative;
+}
+.brand:before{content:"";width:150px;height:150px;border:1px solid rgba(98,230,255,.2);border-radius:50%;position:absolute;top:80px;left:50%;transform:translateX(-50%);box-shadow:0 0 55px rgba(98,230,255,.06)}
+.brand h1{font-family:var(--serif);font-weight:400;letter-spacing:8px;font-size:clamp(2rem,4vw,3.5rem);margin:120px 0 12px;color:#f3fbff;position:relative}
+.brand h1 i{color:var(--accent);font-size:.7em}
+.brand p{margin:0;color:#71899b;letter-spacing:4px;font-size:11px;text-transform:uppercase}
+.system-line{margin-top:34px;display:flex;align-items:center;gap:10px;color:#879baa;font-size:11px;letter-spacing:1.5px}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 16px var(--ok);animation:pulse 1.8s infinite}
+.security-note{margin-top:28px;padding-top:20px;border-top:1px solid #1c2833;color:#566b7c;font-size:11px;line-height:1.8;max-width:390px}
+.corner{position:absolute;width:34px;height:34px;border-color:#345060!important;opacity:.8}
+.corner.tl{top:16px;left:16px;border-top:1px solid;border-left:1px solid}
+.corner.tr{top:16px;right:16px;border-top:1px solid;border-right:1px solid}
+.corner.bl{bottom:16px;left:16px;border-bottom:1px solid;border-left:1px solid}
+.corner.br{bottom:16px;right:16px;border-bottom:1px solid;border-right:1px solid}
+
+.login-card > .nav-tabs{
+  grid-column:2;
+  grid-row:1;
+  align-self:end;
+  margin:0 48px;
+  border:0;
+  display:flex;
+  gap:28px;
+}
+.nav-tabs .nav-link{border:0!important;border-bottom:1px solid transparent!important;border-radius:0;color:#566978;background:transparent;padding:12px 0;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.nav-tabs .nav-link.active{color:var(--accent);background:transparent;border-bottom-color:var(--accent)!important}
+
+#faceMode,#passwordMode{
+  grid-column:2;
+  grid-row:2;
+  padding:28px 48px 48px;
+  align-self:start;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  overflow-y:auto;
+}
+
+.camera-box{
+  aspect-ratio:4/3;
+  width:100%;
+  max-width:360px;
+  margin-left:auto;
+  margin-right:auto;
+  margin-bottom:20px;
+  background:#020406;
+  border:1px solid #263744;
+  border-radius:0;
+  position:relative;
+  overflow:hidden;
+  box-shadow:inset 0 0 0 10px #071018,inset 0 0 60px rgba(98,230,255,.08);
+}
+.camera-box:before,.camera-box:after{content:"";position:absolute;pointer-events:none}
+.camera-box:before{inset:12%;border:1px solid rgba(98,230,255,.25);clip-path:polygon(0 0,18% 0,18% 2px,0 2px,0 18%,2px 18%,2px 0,100% 0,100% 18%,calc(100% - 2px) 18%,calc(100% - 2px) 0,100% 0,100% 100%,82% 100%,82% calc(100% - 2px),100% calc(100% - 2px),100% 82%,calc(100% - 2px) 82%,calc(100% - 2px) 100%,0 100%,0 82%,2px 82%,2px 100%,0 100%)}
+.camera-box:after{width:60%;height:1px;left:20%;top:50%;background:rgba(98,230,255,.35);box-shadow:0 0 20px var(--accent);animation:scan 3s linear infinite}
+.camera-box video{width:100%;height:100%;object-fit:cover;filter:saturate(.7) contrast(1.1);display:block}
+.camera-box .placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#536879;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.camera-box .placeholder i{font-size:2rem;color:#35505f;display:block;margin-bottom:15px}
+
+.form-label{color:#708595;font-size:10px;letter-spacing:2px;text-transform:uppercase}
+.form-control{background:#070c11!important;border:1px solid #263744!important;color:#e9f8ff!important;border-radius:0;padding:13px 14px}
+.form-control:focus{border-color:var(--accent)!important;box-shadow:0 0 0 1px rgba(98,230,255,.15)!important}
+.btn-primary{background:transparent!important;border:1px solid var(--accent)!important;color:var(--accent)!important;border-radius:0!important;text-transform:uppercase;letter-spacing:2px;font-size:11px;padding:13px}
+.btn-primary:hover{background:var(--accent)!important;color:#041016!important;box-shadow:0 0 28px rgba(98,230,255,.18)}
+.status-text{font-size:10px;letter-spacing:1px;margin-top:13px;text-align:left}
+.status-success{color:var(--ok)}.status-error{color:var(--danger)}.status-info{color:#71899b}
+.brand-icon{color:var(--accent)}
+
+@keyframes pulse{50%{opacity:.35;transform:scale(.75)}}
+@keyframes scan{0%{transform:translateY(-130px);opacity:0}20%,80%{opacity:1}100%{transform:translateY(130px);opacity:0}}
+
+/* ---------- Tablet / narrow desktop ---------- */
+@media(max-width:900px){
+  body{overflow:auto;align-items:flex-start}
+  .login-card{
+    grid-template-columns:1fr;
+    grid-template-rows:auto auto 1fr;
+    width:94vw;
+    min-height:auto;
+    max-height:none;
+    margin:24px auto;
+  }
+  .brand{grid-column:1;grid-row:1;border-right:0;border-bottom:1px solid #1c2833;padding:60px 30px 30px}
+  .brand h1{font-size:2rem;margin-top:60px}
+  .login-card:before{font-size:8px}
+  .login-card > .nav-tabs{grid-column:1;grid-row:2;margin:20px 30px 0;align-self:start}
+  #faceMode,#passwordMode{grid-column:1;grid-row:3;padding:20px 30px 35px;max-height:none;overflow:visible}
+  .camera-box{max-width:100%}
+  .corner{display:none}
+}
+
+/* ===== SilentVoice-style warm theme override (RESTORED) ===== */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
+:root{--ink:#1f0b0f;--panel:#33171a;--panel2:#3d1d20;--line:rgba(255,200,190,.12);--ice:#fff3ee;--muted:#b99a97;--accent:#ef7468;--hot:#ffb84a;--ok:#6fd8a8;--danger:#ff7a80;--serif:'Plus Jakarta Sans',Inter,'Segoe UI',system-ui,sans-serif;--sans:'Plus Jakarta Sans',Inter,'Segoe UI',system-ui,sans-serif}
+body:before{background:radial-gradient(900px 500px at 85% -10%,rgba(239,116,104,.18),transparent 60%),radial-gradient(700px 500px at 0% 100%,rgba(255,184,74,.08),transparent 60%),#1f0b0f!important}
+body:after{opacity:0!important}
+.login-card{background:linear-gradient(160deg,#3d1d20,#2a1014)!important;border:1px solid var(--line)!important;border-radius:36px!important;box-shadow:0 40px 90px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.05)!important}
+.login-card:before{content:"JARVIS-HYPER \00b7 secure access"!important;color:#d9bdb8!important;letter-spacing:2px!important;font-weight:700;text-transform:uppercase}
+.login-card:after,.corner{display:none!important}
+.brand{border-right:1px solid var(--line)!important}
+.brand:before{border-color:rgba(239,116,104,.3)!important;box-shadow:0 0 70px rgba(239,116,104,.12)!important;background:rgba(239,116,104,.06)}
+.brand h1{font-weight:800!important;letter-spacing:-1.5px!important;color:#fff3ee!important}
+.brand h1 i{color:var(--accent)!important}
+.brand p{color:#d9bdb8!important;letter-spacing:3px!important;font-weight:700}
+.system-line,.security-note{color:#b99a97!important;border-color:var(--line)!important}
+.nav-tabs .nav-link{color:#b99a97!important;font-weight:700;border-radius:999px!important;padding:10px 20px!important;border:0!important}
+.nav-tabs .nav-link.active{background:var(--accent)!important;color:#fff!important;box-shadow:0 6px 18px rgba(239,116,104,.35)}
+.camera-box{border-radius:28px!important;border:1px solid var(--line)!important;background:#160709!important;box-shadow:inset 0 0 0 8px #2a1014!important}
+.form-control{background:rgba(0,0,0,.25)!important;border:1px solid var(--line)!important;border-radius:999px!important;color:#fff3ee!important;padding:14px 22px!important}
+.form-control:focus{border-color:rgba(239,116,104,.7)!important;box-shadow:0 0 0 4px rgba(239,116,104,.14)!important}
+.form-label{color:#d9bdb8!important;font-weight:700}
+.btn-primary,.btn-primary:hover,.btn-primary:focus{background:var(--accent)!important;border:0!important;color:#fff!important;border-radius:999px!important;font-weight:700;padding:13px 26px;box-shadow:0 8px 20px rgba(239,116,104,.3)}
+.btn-primary:hover{background:#d85b50!important}
+</style>
 
 </head>
 <body>
@@ -36,7 +165,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             <p>SECURE ACCESS TERMINAL</p><div class="system-line"><span class="pulse-dot"></span>SYSTEM READY <span>•</span> ENCRYPTED SESSION</div>
         </div>
 
-        <!-- Mode tabs -->
         <ul class="nav nav-tabs justify-content-center" id="authTabs">
             <li class="nav-item">
                 <button class="nav-link active" id="faceTab" onclick="switchMode('face')">
@@ -50,7 +178,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             </li>
         </ul>
 
-        <!-- Face mode -->
         <div id="faceMode">
             <div class="camera-box" id="cameraBox">
                 <div class="placeholder">
@@ -66,7 +193,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             </div>
         </div>
 
-        <!-- Password mode -->
         <div id="passwordMode" style="display: none;">
             <div class="mb-3">
                 <label class="form-label">Access Code</label>
@@ -82,36 +208,26 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
         <div class="security-note"><i class="fas fa-lock"></i> Local biometric verification • Protected session</div>
     </div>
 
-    <!-- face-api.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
 
     <script>
-        // ============================================================
-        // CONFIG
-        // ============================================================
         const HARDCODED_PASSWORD = "jarvis2026";
         const MODEL_URL = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model";
         const REFERENCE_PHOTO = "/static/faces/moses.jpg";
-        const MATCH_THRESHOLD = 0.55;   // Lower = stricter. 0.5-0.6 is typical.
+        const MATCH_THRESHOLD = 0.55;
         const USER_NAME = "Moses";
 
         let videoElement = null;
         let faceApiReady = false;
         let referenceDescriptor = null;
 
-        // ============================================================
-        // MODE SWITCHING
-        // ============================================================
         function switchMode(mode) {
             document.getElementById('faceTab').classList.toggle('active', mode === 'face');
             document.getElementById('passwordTab').classList.toggle('active', mode === 'password');
-            document.getElementById('faceMode').style.display = mode === 'face' ? 'block' : 'none';
+            document.getElementById('faceMode').style.display = mode === 'face' ? 'flex' : 'none';
             document.getElementById('passwordMode').style.display = mode === 'password' ? 'block' : 'none';
         }
 
-        // ============================================================
-        // SETUP CAMERA
-        // ============================================================
         async function setupCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
@@ -128,9 +244,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             }
         }
 
-        // ============================================================
-        // LOAD FACE-API MODELS
-        // ============================================================
         async function loadFaceModels() {
             try {
                 console.log('[FACE] Loading face-api models...');
@@ -146,7 +259,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
                 console.log('[FACE] Models loaded');
                 setFaceStatus('Models ready. Loading reference photo...', 'info');
 
-                // Load reference photo and compute descriptor
                 await loadReferenceDescriptor();
 
                 setFaceStatus('Ready. Click "Verify Face"', 'success');
@@ -156,9 +268,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             }
         }
 
-        // ============================================================
-        // LOAD REFERENCE PHOTO & COMPUTE DESCRIPTOR
-        // ============================================================
         async function loadReferenceDescriptor() {
             try {
                 console.log('[FACE] Loading reference:', REFERENCE_PHOTO);
@@ -181,9 +290,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             }
         }
 
-        // ============================================================
-        // VERIFY FACE
-        // ============================================================
         async function verifyFace() {
             if (!faceApiReady) {
                 setFaceStatus('Models still loading. Please wait...', 'info');
@@ -210,7 +316,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
                     return;
                 }
 
-                // Compute Euclidean distance
                 const distance = faceapi.euclideanDistance(
                     referenceDescriptor,
                     detection.descriptor
@@ -232,9 +337,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             }
         }
 
-        // ============================================================
-        // PASSWORD
-        // ============================================================
         function verifyPassword() {
             const input = document.getElementById('passwordInput').value;
             const status = document.getElementById('passwordStatus');
@@ -250,9 +352,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             }
         }
 
-        // ============================================================
-        // HELPERS
-        // ============================================================
         function setFaceStatus(msg, type = 'info') {
             const el = document.getElementById('faceStatus');
             el.textContent = msg;
@@ -265,9 +364,6 @@ body:after{content:"";position:fixed;inset:0;opacity:.25;background-image:linear
             window.location.href = '/mega';
         }
 
-        // ============================================================
-        // INIT
-        // ============================================================
         document.getElementById('passwordInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') verifyPassword();
         });
