@@ -1,5 +1,6 @@
 fastapi==0.110.1
 uvicorn[standard]==0.25.0
+streamlit
 python-dotenv>=1.0.0
 pydantic>=2.6.0
 python-multipart>=0.0.9
